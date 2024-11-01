@@ -1,0 +1,35 @@
+Requirements:
+Tree Geometry:
+
+Canopy Diameter (D) and Height (H): Helps determine shadow length and shape on neighboring trees.
+Leaf Density and Leaf Area Index (LAI): Affects light penetration through the canopy.
+Plantation Layout:
+
+Tree Spacing (S): Influences canopy overlap and shading.
+Row Orientation (if applicable): Affects sunlight exposure based on sun’s path.
+Geographical Data:
+
+Latitude (Lat) and Longitude (Long): Essential for solar angle calculations.
+Elevation (Elev): Impacts sunlight intensity due to atmospheric thickness.
+Environmental Conditions:
+
+Seasonal Sunlight Variation: Adjusts for annual changes in sunlight.
+Weather Data: Includes historical cloud cover for better long-term sunlight estimates.
+Key Equations:
+Solar Position Calculations:
+
+Solar Declination (δ): δ = 23.45 * sin((360/365) * (284 + N))
+Solar Hour Angle (HRA): HRA = 15° * (t - 12)
+Solar Zenith Angle (θz): cos(θz) = sin(δ) * sin(Lat) + cos(δ) * cos(Lat) * cos(HRA)
+Shadow Length (L): L = H / tan(θz)
+
+Canopy Shading and Overlap:
+
+Overlap Area (O): O = D^2 * cos(θ) * sin(θ)
+Adjusted Sunlight Exposure:
+
+Direct Sunlight Reduction Factor (DSR): DSR = 1 - (Overlap Area (O) / Canopy Area (A))
+Total Sunlight Exposure (TSE): TSE = Σ (DSR * LAI adjustment * hourly irradiance)
+Weather Adjustments:
+
+Cloud Cover Adjustment Factor (CCF): Adjusted Sunlight Exposure = TSE * (1 - CCF)
