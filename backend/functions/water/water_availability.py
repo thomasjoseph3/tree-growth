@@ -36,10 +36,10 @@ def calculate_water_availability(annual_rainfall, soil_type, drainage):
     
     return round(ewa, 2)
 
-# Example usage
-annual_rainfall = 1200  # mm, example annual rainfall
-soil_type = "loamy"
-drainage = "moderately_drained"
+# # Example usage
+# annual_rainfall = 1200  # mm, example annual rainfall
+# soil_type = "loamy"
+# drainage = "moderately_drained"
 
-water_availability = calculate_water_availability(annual_rainfall, soil_type, drainage)
-print("Water Availability:", water_availability, "mm")
+# water_availability = calculate_water_availability(annual_rainfall, soil_type, drainage)
+# print("Water Availability:", water_availability, "mm")

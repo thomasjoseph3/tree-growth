@@ -1,5 +1,5 @@
 import math
-from backend.functions.soil.nutrient_factor import calculate_nutrient_factor
+from  functions.soil.nutrient_factor import calculate_nutrient_factor
 
 # Soil quality calculation with dynamic nutrient factor
 def calculate_soil_quality(soil_type, pH, tree_type, nitrogen, phosphorus, potassium, organic_matter):
@@ -23,6 +23,7 @@ def calculate_soil_quality(soil_type, pH, tree_type, nitrogen, phosphorus, potas
 
     # Calculate the nutrient factor dynamically
     nutrient_factor = calculate_nutrient_factor(nitrogen, phosphorus, potassium, organic_matter, tree_type)
+    print("Nutrient Factor:", nutrient_factor)
 
     # Fetch the base quality for soil type
     base_quality = soil_base_quality.get(soil_type.lower(), 0.5)
@@ -58,15 +59,15 @@ def calculate_soil_quality(soil_type, pH, tree_type, nitrogen, phosphorus, potas
         # Non-preferred soil significantly reduces quality, adjusted by nutrient factor
         return max((base_quality * 0.5) * nutrient_factor, 0)
 
-# Example usage
-soil_quality = calculate_soil_quality(
-    soil_type="loamy", 
-    pH=6.5, 
-    tree_type="teak", 
-    nitrogen=75, 
-    phosphorus=35, 
-    potassium=40, 
-    organic_matter=28
-)
+# # Example usage
+# soil_quality = calculate_soil_quality(
+#     soil_type="loamy", 
+#     pH=6.5, 
+#     tree_type="teak", 
+#     nitrogen=75, 
+#     phosphorus=35, 
+#     potassium=40, 
+#     organic_matter=28
+# )
 
-print("Soil Quality:", soil_quality)
+# print("Soil Quality:", soil_quality)
