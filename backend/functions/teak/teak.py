@@ -1,23 +1,23 @@
-# Corrected species-specific growth parameters for teak
-TEAK_PROFILES =  {
+TREE_PROFILES = {
     "teak": {
-        "base_growth_rate": {
-            "height": 4.0,  # mm/year for height growth
-            "dbh": 3.0,     # mm/year for DBH growth
-            "volume": 0.05  # m³/year for volume growth
-        },
         "growth_phases": [
-            # (start age, end age, height multiplier, dbh multiplier, volume multiplier)
-            (0, 10, 1.2, 1.1, 1.2),  # Phase 1
-            (10, 20, 0.8, 0.7, 0.8),  # Phase 2
-            (20, 30, 0.6, 0.5, 0.6)   # Phase 3
+            # Early Phase: Rapid growth in height and DBH, moderate volume growth
+            { "start_age": 0, "end_age": 10, "height_growth": 1200, "dbh_growth": 6.0, "volume_growth": 0.035 },
+            
+            # Middle Phase: Slower height growth, steady DBH growth, increased volume growth as tree matures
+            { "start_age": 10, "end_age": 20, "height_growth": 800, "dbh_growth": 4.5, "volume_growth": 0.03 },
+            
+            # Late Phase: Minimal height growth, reduced DBH growth, lower volume growth as tree stabilizes
+            { "start_age": 20, "end_age": 30, "height_growth": 200, "dbh_growth": 2.5, "volume_growth": 0.015 }
         ],
-        "max_height": 30.0,  # meters
-        "max_canopy_diameter": 15.0,  # meters
-        "max_biomass": 1500.0,  # kg
+        "max_values": {
+            "max_height": 46.0,             # meters
+            "max_canopy_diameter": 9.8,    # meters, affects max DBH
+            "max_biomass": 1500.0           # kg
+        },
         "temperature_tolerance": {
-            "cold_tolerance": 5,   # Minimum temperature in °C teak can tolerate
-            "heat_tolerance": 45   # Maximum temperature in °C teak can tolerate
+            "cold_tolerance": 5,
+            "heat_tolerance": 45
         }
     }
 }
