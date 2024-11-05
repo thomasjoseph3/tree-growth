@@ -1,12 +1,12 @@
 import TreeManager from './tree/TreeManager.js'
 import './App.css'
 import GenerateTree from './tree/GenerateTree'
-import GrowthPredictionApp from './Graph.jsx'
+import Graph from './Graph.jsx'
 function App() {
 
   return (
     <>
-<GrowthPredictionApp/>
+  <Graph/>
     </>
   )
 }
