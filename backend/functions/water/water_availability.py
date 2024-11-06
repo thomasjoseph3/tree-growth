@@ -1,8 +1,11 @@
-# Define soil retention factors for different soil types
 SOIL_RETENTION = {
     "loamy": 0.85,
     "sandy": 0.4,
-    "clay": 0.75
+    "clay": 0.75,
+    "laterite": 0.6,        # Found in tropical regions, moderate retention
+    "peaty": 0.9,           # High organic content, retains significant moisture
+    "black cotton": 0.7,    # Expansive soil, retains moisture moderately well
+    "alluvial": 0.8         # Fertile, found in river valleys, moderate to high retention
 }
 
 # Define drainage retention factors
@@ -14,7 +17,9 @@ DRAINAGE_RETENTION = {
 
 # Define optimal water range for different tree types
 WATER_RANGE = {
-    "teak": (1200, 2500)  # mm, example optimal range for teak
+    "teak": (1200, 2500),   # mm, example optimal range for teak
+    "pine": (700, 1500),    # Typical optimal range for pine
+    "eucalyptus": (800, 1800)  # Typical optimal range for eucalyptus
 }
 
 def calculate_water_availability(annual_rainfall, soil_type, drainage, tree_type="teak"):
