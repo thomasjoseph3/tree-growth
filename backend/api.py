@@ -2,11 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
 from functions.teak.growth import calculate_growth_rate, calculate_annual_height_growth
-from functions.teak.teak import TREE_PROFILES
 from functions.soil.soil_quality import calculate_soil_quality
 from functions.temperature.tempreature_score_with_tolerance import calculate_temperature_adaptation
 from functions.water.water_availability import calculate_water_availability
-
+from functions.trees_spec import TREE_PROFILES
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 

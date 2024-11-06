@@ -1,18 +1,16 @@
-# Ideal levels and weights for different tree types
 IDEAL_NUTRIENT_LEVELS = {
     "teak": {"nitrogen": 80, "phosphorus": 40, "potassium": 40, "organic_matter": 30},
     "oak": {"nitrogen": 70, "phosphorus": 35, "potassium": 45, "organic_matter": 25},
     "pine": {"nitrogen": 65, "phosphorus": 30, "potassium": 35, "organic_matter": 20},
-    # Add more tree types as needed
+    "eucalyptus": {"nitrogen": 75, "phosphorus": 35, "potassium": 40, "organic_matter": 25}
 }
 
 NUTRIENT_WEIGHTS = {
     "teak": {"nitrogen": 0.4, "phosphorus": 0.2, "potassium": 0.2, "organic_matter": 0.2},
     "oak": {"nitrogen": 0.35, "phosphorus": 0.25, "potassium": 0.2, "organic_matter": 0.2},
     "pine": {"nitrogen": 0.3, "phosphorus": 0.25, "potassium": 0.25, "organic_matter": 0.2},
-    # Add more tree types as needed
+    "eucalyptus": {"nitrogen": 0.35, "phosphorus": 0.25, "potassium": 0.2, "organic_matter": 0.2}
 }
-
 def calculate_nutrient_factor(nitrogen, phosphorus, potassium, organic_matter, tree_type):
     # Check if tree type exists in the dictionaries
     if tree_type.lower() not in IDEAL_NUTRIENT_LEVELS or tree_type.lower() not in NUTRIENT_WEIGHTS:
