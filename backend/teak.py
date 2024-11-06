@@ -77,7 +77,7 @@ soil_quality = calculate_soil_quality(
     potassium=40, 
     organic_matter=28
 )           
-temperature_adaptation = calculate_temperature_adaptation(33, (20, 30), 5, 45)
+temperature_adaptation = calculate_temperature_adaptation(30, (20, 30), 5, 45)
 water_availability = calculate_water_availability(1200, "loamy", "moderately_drained")  # Between 0 and 1
 
 print("Soil Quality:", soil_quality)
@@ -87,9 +87,9 @@ print("Water Availability:", water_availability)
 # Define initial conditions
 initial_age = 0.5      # Initial age in years
 initial_height = 0.8   # Initial height in meters
-initial_dbh = 5        # Initial DBH in cm
+initial_dbh = 3       # Initial DBH in cm
 initial_volume = 0.000314  # Initial volume in cubic meters
-target_age = 19        # Target age in years
+target_age = 20       # Target age in years
 
 # Run simulation
 growth_result = simulate_teak_growth(

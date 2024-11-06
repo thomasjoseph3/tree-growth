@@ -17,7 +17,9 @@ def calculate_collar_diameter(dbh):
 def simulate_teak_growth(
     initial_age, initial_height, initial_dbh, initial_volume, target_age, teak_profile,
     soil_quality, temperature_adaptation, water_availability
-):
+):  
+    print(initial_age,initial_dbh,initial_height,initial_volume,target_age,teak_profile,soil_quality,temperature_adaptation,water_availability)
+
     current_age = initial_age
     current_height = initial_height
     current_dbh = initial_dbh
@@ -25,6 +27,9 @@ def simulate_teak_growth(
 
     # Calculate the combined growth factor
     combined_growth_factor = min(soil_quality, temperature_adaptation, water_availability)
+    print(f"soilquality:{soil_quality}")
+    print(f"temperature_adaptation:{temperature_adaptation}")
+    print(f"water_availability:{water_availability}")
     print(f"Combined Growth Factor: {combined_growth_factor}") 
     
     while current_age < target_age:
@@ -72,7 +77,6 @@ def simulate_teak_growth(
 @app.route('/api/teak-growth', methods=['POST'])
 def teak_growth():
     data = request.get_json()
-    print("Received data:", data)  # Debug print
 
     try:
         # Parse and convert incoming data to the correct types

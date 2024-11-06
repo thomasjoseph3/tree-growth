@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const fields = {
     qualityFields: [
@@ -40,12 +44,13 @@ const Graph = () => {
         organic_matter: '',
         min_temp: '',
         max_temp: '',
-        temp:'',
+        temp: '',
         cold_tolerance: '',
         heat_tolerance: '',
         annual_rainfall: '',
         drainage: ''
     });
+    const [growthData, setGrowthData] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,7 +71,9 @@ const Graph = () => {
             });
             
             const result = await response.json();
-            console.log('Response from backend:', result);
+            setGrowthData(result);
+            console.log(result);
+            
         } catch (error) {
             console.error('Error sending data to backend:', error);
         }
@@ -93,6 +100,36 @@ const Graph = () => {
         </div>
     );
 
+    const chartData = growthData && {
+        labels: growthData.growth_data.map(data => data.year),
+        datasets: [
+            {
+                label: 'Height (m)',
+                data: growthData.growth_data.map(data => data.height),
+                borderColor: 'blue',
+                fill: false
+            },
+            {
+                label: 'DBH (cm)',
+                data: growthData.growth_data.map(data => data.dbh),
+                borderColor: 'green',
+                fill: false
+            },
+            {
+                label: 'Volume (m³)',
+                data: growthData.growth_data.map(data => data.volume),
+                borderColor: 'red',
+                fill: false
+            },
+            {
+                label: 'Collar Diameter (cm)',
+                data: growthData.growth_data.map(data => data.collar_diameter),
+                borderColor: 'purple',
+                fill: false
+            }
+        ]
+    };
+
     return (
         <div className='grid grid-cols-4 gap-4 h-screen overflow-hidden'>
             <div className='col-span-1 p-1 overflow-y-auto'>
@@ -103,7 +140,11 @@ const Graph = () => {
             </div>
             <div className='col-span-3 p-4 border border-gray-300 flex justify-center items-center'>
                 <div className='w-full h-full bg-gray-100 flex justify-center items-center'>
-                    <p>Place for chart</p>
+                    {growthData ? (
+                        <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                    ) : (
+                        <p>Place for chart</p>
+                    )}
                 </div>
             </div>
         </div>
