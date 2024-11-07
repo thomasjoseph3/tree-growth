@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
-from functions.teak.growth import calculate_growth_rate, calculate_annual_height_growth
-from functions.teak.teak import TREE_PROFILES
+from functions.trees_spec import TREE_PROFILES
 from functions.soil.soil_quality import calculate_soil_quality
 from functions.temperature.tempreature_score_with_tolerance import calculate_temperature_adaptation
 from functions.water.water_availability import calculate_water_availability
@@ -13,8 +12,8 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 def calculate_collar_diameter(dbh):
     return 0.8692 + 1.1 * dbh  # DBH in cm, output also in cm
 
-def simulate_teak_growth(
-    initial_age, initial_height, initial_dbh, initial_volume, target_age, teak_profile,
+def simulate_tree_growth(
+    initial_age, initial_height, initial_dbh, initial_volume, target_age, tree_profile,
     soil_quality, temperature_adaptation, water_availability
 ):  
     current_age = initial_age
@@ -29,7 +28,7 @@ def simulate_teak_growth(
     previous_height, previous_dbh, previous_volume = current_height, current_dbh, current_volume
 
     while current_age < target_age:
-        for phase in teak_profile["growth_phases"]:
+        for phase in tree_profile["growth_phases"]:
             if phase["start_age"] <= current_age < phase["end_age"]:
                 height_growth_rate = (phase["height_growth"] / 1000) * combined_growth_factor  # meters
                 dbh_growth_rate = phase["dbh_growth"] * combined_growth_factor  # cm/year
@@ -37,9 +36,9 @@ def simulate_teak_growth(
                 break
 
         # Calculate new growth for this year
-        new_height = min(height_growth_rate, teak_profile["max_values"]["max_height"] - current_height)
-        new_dbh = min(dbh_growth_rate, teak_profile["max_values"]["max_canopy_diameter"] * 10 - current_dbh)
-        new_volume = min(volume_growth_rate, teak_profile["max_values"]["max_biomass"] - current_volume)
+        new_height = min(height_growth_rate, tree_profile["max_values"]["max_height"] - current_height)
+        new_dbh = min(dbh_growth_rate, tree_profile["max_values"]["max_canopy_diameter"] * 10 - current_dbh)
+        new_volume = min(volume_growth_rate, tree_profile["max_values"]["max_biomass"] - current_volume)
 
         # Update totals
         current_height += new_height
@@ -73,7 +72,7 @@ def simulate_teak_growth(
         "water_availability": water_availability
     }
 
-@app.route('/api/teak-growth', methods=['POST'])
+@app.route('/api/tree-growth', methods=['POST'])
 def teak_growth():
     data = request.get_json()
     try:
@@ -82,7 +81,8 @@ def teak_growth():
         initial_dbh = float(data.get('initial_dbh'))
         initial_volume = float(data.get('initial_volume'))
         target_age = int(data.get('target_age'))
-        
+        tree_type=data.get('tree_type')
+
         soil_quality = calculate_soil_quality(
             soil_type=data.get('soil_type'),
             pH=float(data.get('pH')),
@@ -106,13 +106,13 @@ def teak_growth():
             data.get('drainage')
         )
 
-        growth_result = simulate_teak_growth(
+        growth_result = simulate_tree_growth(
             initial_age=initial_age,
             initial_height=initial_height,
             initial_dbh=initial_dbh,
             initial_volume=initial_volume,
             target_age=target_age,
-            teak_profile=TREE_PROFILES["teak"],
+            tree_profile=TREE_PROFILES[tree_type],
             soil_quality=soil_quality,
             temperature_adaptation=temperature_adaptation,
             water_availability=water_availability
