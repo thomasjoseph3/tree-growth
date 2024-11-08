@@ -40,7 +40,8 @@ def teak_growth():
         water_availability = calculate_water_availability(
             float(data.get('annual_rainfall')),
             data.get('soil_type'),
-            data.get('drainage')
+            data.get('drainage'),
+            data.get('tree_type')
         )
 
         growth_result = simulate_tree_growth(

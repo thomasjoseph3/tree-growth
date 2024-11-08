@@ -22,7 +22,7 @@ WATER_RANGE = {
     "eucalyptus": (800, 1800)  # Typical optimal range for eucalyptus
 }
 
-def calculate_water_availability(annual_rainfall, soil_type, drainage, tree_type="teak"):
+def calculate_water_availability(annual_rainfall, soil_type, drainage, tree_type):
     """
     Calculate normalized water availability based on rainfall, soil type, drainage quality, and tree-specific requirements.
     
