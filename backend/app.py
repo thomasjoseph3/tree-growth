@@ -66,34 +66,23 @@ def area_growth():
     data = request.get_json()
 
     try:
-        # Get parameters from the request
+        # Pass all parameters to the area_growth_calculation function
         result = area_growth_calculation(
-            area_acres=float(data.get('area_acres')),
-            tree_density_per_acre=int(data.get('tree_density_per_acre')),
+            total_area_acres=float(data.get('total_area_acres')),
+            total_trees=int(data.get('total_trees')),
             initial_age=float(data.get('initial_age')),
             initial_height=float(data.get('initial_height')),
             initial_dbh=float(data.get('initial_dbh')),
             initial_volume=float(data.get('initial_volume')),
             target_age=int(data.get('target_age')),
-            tree_type=data.get('tree_type'),
-            soil_type=data.get('soil_type'),
-            pH=float(data.get('pH')),
-            nitrogen=float(data.get('nitrogen')),
-            phosphorus=float(data.get('phosphorus')),
-            potassium=float(data.get('potassium')),
-            organic_matter=float(data.get('organic_matter')),
-            temp=float(data.get('temp')),
-            min_temp=float(data.get('min_temp')),
-            max_temp=float(data.get('max_temp')),
-            cold_tolerance=float(data.get('cold_tolerance')),
-            heat_tolerance=float(data.get('heat_tolerance')),
-            annual_rainfall=float(data.get('annual_rainfall')),
-            drainage=data.get('drainage')
+            tree_type=data.get('tree_type').lower(),
+            conditions=data.get('conditions', [])
         )
 
         return jsonify(result)
 
     except (TypeError, ValueError, KeyError) as e:
         return jsonify({"error": "Invalid input data format or missing data", "message": str(e)}), 400
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -6,66 +6,100 @@ from functions.temperature.tempreature_score_with_tolerance import calculate_tem
 from functions.water.water_availability import calculate_water_availability
 
 def area_growth_calculation(
-    area_acres, tree_density_per_acre, initial_age, initial_height, initial_dbh, 
-    initial_volume, target_age, tree_type, soil_type, pH, nitrogen, phosphorus, 
-    potassium, organic_matter, temp, min_temp, max_temp, cold_tolerance, 
-    heat_tolerance, annual_rainfall, drainage
+    total_area_acres, 
+    total_trees, 
+    initial_age, 
+    initial_height, 
+    initial_dbh, 
+    initial_volume, 
+    target_age, 
+    tree_type, 
+    conditions
 ):
     """
-    Calculates the total expected growth of trees across an area by scaling up from a single tree simulation.
+    Calculates the expected growth of trees across an area with varied conditions.
+    
+    Parameters:
+    - total_area_acres (float): Total area in acres.
+    - total_trees (int): Total number of trees across the plantation.
+    - initial_age, initial_height, initial_dbh, initial_volume (float): Initial metrics of the trees.
+    - target_age (int): Target age to calculate growth to.
+    - tree_type (str): Type of tree.
+    - conditions (list): List of dictionaries with conditions for each section of the area.
+    
+    Returns:
+    - dict: Average growth metrics and tree counts per condition.
     """
     
-    # Calculate total number of trees based on area and density
-    total_trees = math.ceil(area_acres * tree_density_per_acre)
+    # List to store growth results for each condition
+    results_per_condition = []
 
-    # Calculate soil quality
-    soil_quality = calculate_soil_quality(
-        soil_type=soil_type,
-        pH=pH,
-        tree_type=tree_type,
-        nitrogen=nitrogen,
-        phosphorus=phosphorus,
-        potassium=potassium,
-        organic_matter=organic_matter
-    )
+    # Calculate growth for each condition
+    for condition in conditions:
+        # Calculate the area and number of trees for this specific condition
+        proportion = float(condition['proportion'])
+        area_acres_for_condition = total_area_acres * proportion
+        trees_in_condition = int(total_trees * proportion)
 
-    # Calculate temperature adaptation
-    temperature_adaptation = calculate_temperature_adaptation(
-        temp,
-        (min_temp, max_temp),
-        cold_tolerance,
-        heat_tolerance
-    )
+        # Calculate soil quality
+        soil_quality = calculate_soil_quality(
+            soil_type=condition['soil_type'],
+            pH=float(condition['pH']),
+            tree_type=tree_type,
+            nitrogen=float(condition['nitrogen']),
+            phosphorus=float(condition['phosphorus']),
+            potassium=float(condition['potassium']),
+            organic_matter=float(condition['organic_matter'])
+        )
 
-    # Calculate water availability
-    water_availability = calculate_water_availability(
-        annual_rainfall,
-        soil_type,
-        drainage
-    )
+        # Calculate temperature adaptation
+        temperature_adaptation = calculate_temperature_adaptation(
+            average_temp=float(condition['temp']),
+            optimal_temp_range=(float(condition['min_temp']), float(condition['max_temp'])),
+            cold_tolerance=float(condition['cold_tolerance']),
+            heat_tolerance=float(condition['heat_tolerance'])
+        )
 
-    # Run the growth simulation for a single tree
-    growth_result = simulate_tree_growth(
-        initial_age=initial_age,
-        initial_height=initial_height,
-        initial_dbh=initial_dbh,
-        initial_volume=initial_volume,
-        target_age=target_age,
-        tree_profile=TREE_PROFILES[tree_type],
-        soil_quality=soil_quality,
-        temperature_adaptation=temperature_adaptation,
-        water_availability=water_availability
-    )
+        # Calculate water availability
+        water_availability = calculate_water_availability(
+            annual_rainfall=float(condition['annual_rainfall']),
+            soil_type=condition['soil_type'],
+            drainage=condition['drainage'],
+            tree_type=tree_type
+        )
 
-    # Scale up the growth results for the entire area
-    aggregated_result = {
-        "total_final_height": growth_result["final_height"] * total_trees,
-        "total_final_dbh": growth_result["final_dbh"] * total_trees,
-        "total_final_volume": growth_result["final_volume"] * total_trees,
-        "total_collar_diameter": growth_result["final_collar_diameter"] * total_trees,
-    }
+        # Run growth simulation for a single tree in this condition
+        growth_result = simulate_tree_growth(
+            initial_age=initial_age,
+            initial_height=initial_height,
+            initial_dbh=initial_dbh,
+            initial_volume=initial_volume,
+            target_age=target_age,
+            tree_profile=TREE_PROFILES[tree_type],
+            soil_quality=soil_quality,
+            temperature_adaptation=temperature_adaptation,
+            water_availability=water_availability
+        )
 
+        # Calculate average growth per tree in this condition
+        average_growth = {
+            "average_final_height": growth_result["final_height"],
+            "average_final_dbh": growth_result["final_dbh"],
+            "average_final_volume": growth_result["final_volume"],
+            "average_collar_diameter": growth_result["final_collar_diameter"]
+        }
+
+        # Append the results for this condition
+        results_per_condition.append({
+            "condition_proportion": proportion,
+            "trees_in_condition": trees_in_condition,
+            "area_acres_for_condition": area_acres_for_condition,
+            "average_growth": average_growth
+        })
+
+    # Return growth details for each condition in the plantation area
     return {
         "total_trees": total_trees,
-        "aggregated_growth": aggregated_result
+        "total_area_acres": total_area_acres,
+        "results_per_condition": results_per_condition
     }
