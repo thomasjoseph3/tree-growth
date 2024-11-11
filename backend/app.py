@@ -5,7 +5,7 @@ from functions.soil.soil_quality import calculate_soil_quality
 from functions.temperature.tempreature_score_with_tolerance import calculate_temperature_adaptation
 from functions.water.water_availability import calculate_water_availability
 from tree_calc.simulate_tree import simulate_tree_growth
-from area_growth_calc.calculate_growth import area_growth_calculation
+from area_growth_calc.area_growth2 import area_growth_calculation
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
@@ -76,6 +76,7 @@ def area_growth():
             initial_volume=float(data.get('initial_volume')),
             target_age=int(data.get('target_age')),
             tree_type=data.get('tree_type').lower(),
+            tree_spacing=float(data.get('tree_spacing')),
             conditions=data.get('conditions', [])
         )
 

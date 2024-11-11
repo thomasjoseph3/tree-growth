@@ -1,10 +1,8 @@
-import math
 from functions.trees_spec import TREE_PROFILES
 from tree_calc.simulation_with_ci import simulate_tree_growth
 from functions.soil.soil_quality import calculate_soil_quality
 from functions.temperature.tempreature_score_with_tolerance import calculate_temperature_adaptation
 from functions.water.water_availability import calculate_water_availability
-
 def area_growth_calculation(
     total_area_acres, 
     total_trees, 
@@ -17,32 +15,18 @@ def area_growth_calculation(
     tree_spacing,
     conditions
 ):
-    """
-    Calculates the expected growth of trees across an area with varied conditions.
-    
-    Parameters:
-    - total_area_acres (float): Total area in acres.
-    - total_trees (int): Total number of trees across the plantation.
-    - initial_age, initial_height, initial_dbh, initial_volume (float): Initial metrics of the trees.
-    - target_age (int): Target age to calculate growth to.
-    - tree_type (str): Type of tree.
-    - conditions (list): List of dictionaries with conditions for each section of the area.
-    
-    Returns:
-    - dict: Average growth metrics and tree counts per condition.
-    """
-    
-    # List to store growth results for each condition
     results_per_condition = []
 
-    # Calculate growth for each condition
+    # Variables to accumulate weighted averages
+    total_height, total_dbh, total_volume, total_collar_diameter = 0, 0, 0, 0
+    total_trees_count = 0
+
     for condition in conditions:
-        # Calculate the area and number of trees for this specific condition
         proportion = float(condition['proportion'])
         area_acres_for_condition = total_area_acres * proportion
         trees_in_condition = int(total_trees * proportion)
 
-        # Calculate soil quality
+        # Calculate environmental factors
         soil_quality = calculate_soil_quality(
             soil_type=condition['soil_type'],
             pH=float(condition['pH']),
@@ -52,16 +36,12 @@ def area_growth_calculation(
             potassium=float(condition['potassium']),
             organic_matter=float(condition['organic_matter'])
         )
-
-        # Calculate temperature adaptation
         temperature_adaptation = calculate_temperature_adaptation(
             average_temp=float(condition['temp']),
             optimal_temp_range=(float(condition['min_temp']), float(condition['max_temp'])),
             cold_tolerance=float(condition['cold_tolerance']),
             heat_tolerance=float(condition['heat_tolerance'])
         )
-
-        # Calculate water availability
         water_availability = calculate_water_availability(
             annual_rainfall=float(condition['annual_rainfall']),
             soil_type=condition['soil_type'],
@@ -69,7 +49,7 @@ def area_growth_calculation(
             tree_type=tree_type
         )
 
-        # Run growth simulation for a single tree in this condition
+        # Run simulation
         growth_result = simulate_tree_growth(
             initial_age=initial_age,
             initial_height=initial_height,
@@ -83,25 +63,39 @@ def area_growth_calculation(
             tree_spacing=tree_spacing
         )
 
-        # Calculate average growth per tree in this condition
-        average_growth = {
-            "average_final_height": growth_result["final_height"],
-            "average_final_dbh": growth_result["final_dbh"],
-            "average_final_volume": growth_result["final_volume"],
-            "average_collar_diameter": growth_result["final_collar_diameter"]
-        }
+        # Weighted accumulation for each metric
+        total_height += growth_result["final_height"] * trees_in_condition
+        total_dbh += growth_result["final_dbh"] * trees_in_condition
+        total_volume += growth_result["final_volume"] * trees_in_condition
+        total_collar_diameter += growth_result["final_collar_diameter"] * trees_in_condition
+        total_trees_count += trees_in_condition
 
-        # Append the results for this condition
         results_per_condition.append({
             "condition_proportion": proportion,
             "trees_in_condition": trees_in_condition,
             "area_acres_for_condition": area_acres_for_condition,
-            "average_growth": average_growth
+            "average_growth": {
+                "average_final_height": growth_result["final_height"],
+                "average_final_dbh": growth_result["final_dbh"],
+                "average_final_volume": growth_result["final_volume"],
+                "average_collar_diameter": growth_result["final_collar_diameter"]
+            }
         })
 
-    # Return growth details for each condition in the plantation area
+    # Calculate overall weighted averages
+    average_height = total_height / total_trees_count
+    average_dbh = total_dbh / total_trees_count
+    average_volume = total_volume / total_trees_count
+    average_collar_diameter = total_collar_diameter / total_trees_count
+
     return {
         "total_trees": total_trees,
         "total_area_acres": total_area_acres,
+        "overall_average_growth": {
+            "average_height": round(average_height, 2),
+            "average_dbh": round(average_dbh, 2),
+            "average_volume": round(average_volume, 2),
+            "average_collar_diameter": round(average_collar_diameter, 2)
+        },
         "results_per_condition": results_per_condition
     }
