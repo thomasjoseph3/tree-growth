@@ -50,7 +50,7 @@ def calculate_crown_size(dbh, height, tree_type):
 
 def simulate_tree_growth(
     initial_age, initial_height, initial_dbh, initial_volume, target_age, tree_profile,
-    soil_quality, temperature_adaptation, water_availability, tree_spacing, tree_type,use_crown_in_competition=False
+    soil_quality, temperature_adaptation, water_availability, tree_spacing, tree_type,use_competition=False
 ):
     current_age = initial_age
     current_height = initial_height
@@ -72,12 +72,13 @@ def simulate_tree_growth(
                 break
 
         # Calculate competition index with or without crown size
-        if use_crown_in_competition:
+        if use_competition:
             competition_index = calculate_uniform_competition_index(
                 tree_spacing, influence_radius=10, dbh=current_dbh, crown_diameter=initial_crown_size["crown_diameter"]
             )
         else:
-            competition_index = calculate_uniform_competition_index(tree_spacing, influence_radius=10, dbh=current_dbh)
+            competition_index =0
+
         adjusted_height_growth = height_growth_rate * (1 - competition_index)
         adjusted_dbh_growth = dbh_growth_rate * (1 - competition_index)
         adjusted_volume_growth = volume_growth_rate * (1 - competition_index)

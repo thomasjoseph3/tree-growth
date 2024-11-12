@@ -62,7 +62,7 @@ def area_growth_calculation(
             water_availability=water_availability,
             tree_spacing=tree_spacing,
             tree_type=tree_type,
-            use_crown_in_competition=True 
+            use_competition=True 
         )
 
         # Weighted accumulation for each metric
