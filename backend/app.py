@@ -4,7 +4,7 @@ from functions.trees_spec import TREE_PROFILES
 from functions.soil.soil_quality import calculate_soil_quality
 from functions.temperature.tempreature_score_with_tolerance import calculate_temperature_adaptation
 from functions.water.water_availability import calculate_water_availability
-from tree_calc.simulate_tree import simulate_tree_growth
+from tree_calc.simulation_with_ci import simulate_tree_growth
 from area_growth_calc.area_growth2 import area_growth_calculation
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
@@ -19,6 +19,7 @@ def teak_growth():
         initial_volume = float(data.get('initial_volume'))
         target_age = int(data.get('target_age'))
         tree_type=data.get('tree_type')
+        tree_spacing=float(data.get('tree_spacing'))
 
         soil_quality = calculate_soil_quality(
             soil_type=data.get('soil_type'),
@@ -53,7 +54,9 @@ def teak_growth():
             tree_profile=TREE_PROFILES[tree_type],
             soil_quality=soil_quality,
             temperature_adaptation=temperature_adaptation,
-            water_availability=water_availability
+            water_availability=water_availability,
+            tree_spacing=tree_spacing,
+            tree_type=tree_type
         )
 
         return jsonify(growth_result)

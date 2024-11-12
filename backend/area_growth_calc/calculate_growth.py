@@ -80,7 +80,9 @@ def area_growth_calculation(
             soil_quality=soil_quality,
             temperature_adaptation=temperature_adaptation,
             water_availability=water_availability,
-            tree_spacing=tree_spacing
+            tree_spacing=tree_spacing,
+            tree_type=tree_type,
+            use_crown_in_competition=True
         )
 
         # Calculate average growth per tree in this condition

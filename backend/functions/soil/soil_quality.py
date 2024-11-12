@@ -34,7 +34,6 @@ def calculate_soil_quality(soil_type, pH, tree_type, nitrogen, phosphorus, potas
     }
     # Calculate the nutrient factor dynamically
     nutrient_factor = calculate_nutrient_factor(nitrogen, phosphorus, potassium, organic_matter, tree_type)
-    print("Nutrient Factor:", nutrient_factor)
 
     # Fetch the base quality for soil type
     base_quality = soil_base_quality.get(soil_type.lower(), 0.5)
