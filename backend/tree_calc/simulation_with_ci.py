@@ -61,6 +61,7 @@ def simulate_tree_growth(
     initial_crown_size = calculate_crown_size(current_dbh, current_height, tree_type)
 
     combined_growth_factor = min(soil_quality, temperature_adaptation, water_availability)
+    print(soil_quality, temperature_adaptation, water_availability)
     growth_data = []
 
     while current_age < target_age:
